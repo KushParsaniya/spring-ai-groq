@@ -16,7 +16,7 @@ public class EmbeddingConfig {
 
     List<Document> list = new ArrayList<>();
 
-    @PostConstruct
+//    @PostConstruct
     public void etlPipeline() {
         ParagraphPdfDocumentReader pdfReader = new ParagraphPdfDocumentReader("classpath:pdf/Spring-Persistence-with-Hibernate.pdf",
                 PdfDocumentReaderConfig.builder()

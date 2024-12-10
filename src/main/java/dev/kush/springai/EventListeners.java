@@ -20,4 +20,9 @@ public class EventListeners {
     public void handleAssistantContain(CustomAdvisor.AssistantContainEvent event) {
         log.info("Assistant mentioned: {}", event.text());
     }
+
+    @EventListener(HideSensitiveContentAdvisor.SensitiveContentFoundEvent.class)
+    public void handleSensitiveContentFound(HideSensitiveContentAdvisor.SensitiveContentFoundEvent event) {
+        log.info("Sensitive content found: {}, {}", event.message(),event.word());
+    }
 }
