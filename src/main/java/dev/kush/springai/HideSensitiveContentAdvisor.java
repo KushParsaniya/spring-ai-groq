@@ -32,7 +32,9 @@ public class HideSensitiveContentAdvisor implements CallAroundAdvisor {
         if (responseContent.toLowerCase().contains("kush")) {
             applicationEventPublisher.publishEvent(new SensitiveContentFoundEvent(responseContent, "kush"));
             return new AdvisedResponse(ChatResponse.builder()
-                    .withGenerations(List.of(new Generation(new AssistantMessage(responseContent.replaceAll("kush", "k***")))))
+                    .withGenerations(List.of(new Generation(new AssistantMessage(responseContent
+                            .replaceAll("kush", "k***")
+                            .replaceAll("Kush", "K***")))))
                     .build(),
                     advisedRequest.adviseContext());
         }

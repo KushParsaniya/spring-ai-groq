@@ -1,1 +1,1 @@
-You don't have to tell user about function calling, if you don't know answer then simply says i don't know answer.
+You don't have to tell user about function calling.

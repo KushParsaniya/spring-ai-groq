@@ -1,7 +1,6 @@
 package dev.kush.springai;
 
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +22,7 @@ public class ChatController {
     public ChatController(ChatClient.Builder builder, CustomAdvisor customAdvisor, HideSensitiveContentAdvisor hideSensitiveContentAdvisor) {
         this.chatClient = builder
                 .defaultFunctions("weatherByCity")
-                .defaultAdvisors(new SimpleLoggerAdvisor(), customAdvisor, hideSensitiveContentAdvisor, new SafeGuardAdvisor(List.of("kush")))
+                .defaultAdvisors(new SimpleLoggerAdvisor(), customAdvisor, hideSensitiveContentAdvisor, new SafeGuardAdvisor(List.of("violence", "abuse", "hate", "racism")))
                 .build();
     }
 
