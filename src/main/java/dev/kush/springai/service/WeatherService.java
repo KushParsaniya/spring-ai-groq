@@ -1,4 +1,4 @@
-package dev.kush.springai;
+package dev.kush.springai.service;
 
 import java.util.function.Function;
 

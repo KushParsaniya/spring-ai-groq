@@ -1,4 +1,4 @@
-package dev.kush.springai;
+package dev.kush.springai.advisor;
 
 import org.springframework.ai.chat.client.advisor.api.AdvisedRequest;
 import org.springframework.ai.chat.client.advisor.api.AdvisedResponse;

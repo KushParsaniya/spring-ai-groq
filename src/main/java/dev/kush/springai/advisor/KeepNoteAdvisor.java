@@ -1,4 +1,4 @@
-package dev.kush.springai;
+package dev.kush.springai.advisor;
 
 import org.springframework.ai.chat.client.advisor.api.AdvisedRequest;
 import org.springframework.ai.chat.client.advisor.api.AdvisedResponse;
@@ -9,13 +9,13 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomAdvisor implements CallAroundAdvisor {
+public class KeepNoteAdvisor implements CallAroundAdvisor {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public record UserContainEvent(String text) {}
     public record AssistantContainEvent(String text) {}
 
-    public CustomAdvisor(ApplicationEventPublisher applicationEventPublisher) {
+    public KeepNoteAdvisor(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 

@@ -1,5 +1,6 @@
-package dev.kush.springai;
+package dev.kush.springai.config;
 
+import dev.kush.springai.service.WeatherService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Description;
