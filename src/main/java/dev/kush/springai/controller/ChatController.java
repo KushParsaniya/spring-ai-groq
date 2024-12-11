@@ -2,6 +2,7 @@ package dev.kush.springai.controller;
 
 import dev.kush.springai.advisor.HideSensitiveContentAdvisor;
 import dev.kush.springai.advisor.KeepNoteAdvisor;
+import dev.kush.springai.dto.NotionPageRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -29,8 +30,14 @@ public class ChatController {
     private final VectorStore vectorStore;
     private final ChatMemory chatMemory;
 
-    @Value("classpath:prompts/first.txt")
+    @Value("classpath:prompts/first.sh")
     private Resource resource;
+
+    @Value("classpath:prompts/notion.sh")
+    private Resource notionResource;
+
+    @Value("classpath:prompts/format.sh")
+    private Resource formateResource;
 
     public ChatController(ChatClient.Builder builder, KeepNoteAdvisor keepNoteAdvisor, HideSensitiveContentAdvisor hideSensitiveContentAdvisor, VectorStore vectorStore, ChatMemory chatMemory) {
         this.vectorStore = vectorStore;
@@ -70,6 +77,26 @@ public class ChatController {
                 .prompt()
                 .advisors(new QuestionAnswerAdvisor(vectorStore))
                 .system(resource)
+                .user(message)
+                .call()
+                .content();
+    }
+
+    @GetMapping("/notion")
+    public NotionPageRequest.NotionPagePayload notionPage(@RequestBody String message) {
+        return chatClient
+                .prompt()
+                .system(notionResource)
+                .user(message)
+                .call()
+                .entity(NotionPageRequest.NotionPagePayload.class);
+    }
+
+    @GetMapping("/md")
+    public String markdown(@RequestBody String message) {
+        return chatClient
+                .prompt()
+                .system(promptSystemSpec -> promptSystemSpec.param("format", "markdown"))
                 .user(message)
                 .call()
                 .content();
