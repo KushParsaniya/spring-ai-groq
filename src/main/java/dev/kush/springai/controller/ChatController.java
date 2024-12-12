@@ -1,5 +1,6 @@
 package dev.kush.springai.controller;
 
+import dev.kush.springai.advisor.CaptureMemoryAdvisor;
 import dev.kush.springai.advisor.HideSensitiveContentAdvisor;
 import dev.kush.springai.advisor.KeepNoteAdvisor;
 import dev.kush.springai.dto.NotionPageRequest;
@@ -12,6 +13,7 @@ import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.ai.vectorstore.filter.Filter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +41,8 @@ public class ChatController {
     @Value("classpath:prompts/format.sh")
     private Resource formateResource;
 
-    public ChatController(ChatClient.Builder builder, KeepNoteAdvisor keepNoteAdvisor, HideSensitiveContentAdvisor hideSensitiveContentAdvisor, VectorStore vectorStore, ChatMemory chatMemory) {
+    public ChatController(ChatClient.Builder builder, KeepNoteAdvisor keepNoteAdvisor, HideSensitiveContentAdvisor hideSensitiveContentAdvisor,
+                          CaptureMemoryAdvisor captureMemoryAdvisor,VectorStore vectorStore, ChatMemory chatMemory) {
         this.vectorStore = vectorStore;
         this.chatMemory = chatMemory;
         this.chatClient = builder
@@ -47,6 +50,7 @@ public class ChatController {
                 .defaultAdvisors(new SimpleLoggerAdvisor(),
                         keepNoteAdvisor,
                         hideSensitiveContentAdvisor,
+                        captureMemoryAdvisor,
                         new MessageChatMemoryAdvisor(chatMemory),
                         new SafeGuardAdvisor(List.of("violence", "abuse", "hate", "racism")))
                 .build();
@@ -54,6 +58,12 @@ public class ChatController {
 
     @GetMapping("/chat")
     public String chat(@RequestBody String message, @RequestParam String chatId) {
+
+//        var result = vectorStore.similaritySearch("chatId == " + chatId);
+//        if (result != null) {
+//            result.forEach(System.out::println);
+//        }
+
         return chatClient
                 .prompt()
                 .advisors(advisorSpec -> {

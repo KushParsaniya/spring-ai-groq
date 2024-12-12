@@ -1,5 +1,6 @@
 package dev.kush.springai.advisor;
 
+import dev.kush.springai.service.MemoryBasicExtractor;
 import org.springframework.ai.chat.client.advisor.api.AdvisedRequest;
 import org.springframework.ai.chat.client.advisor.api.AdvisedResponse;
 import org.springframework.ai.chat.client.advisor.api.CallAroundAdvisor;
@@ -11,12 +12,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class KeepNoteAdvisor implements CallAroundAdvisor {
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final MemoryBasicExtractor memoryBasicExtractor;
 
     public record UserContainEvent(String text) {}
     public record AssistantContainEvent(String text) {}
 
-    public KeepNoteAdvisor(ApplicationEventPublisher applicationEventPublisher) {
+    public KeepNoteAdvisor(ApplicationEventPublisher applicationEventPublisher, MemoryBasicExtractor memoryBasicExtractor) {
         this.applicationEventPublisher = applicationEventPublisher;
+        this.memoryBasicExtractor = memoryBasicExtractor;
     }
 
     @Override
@@ -26,8 +29,7 @@ public class KeepNoteAdvisor implements CallAroundAdvisor {
         }
 
         var response = chain.nextAroundCall(advisedRequest);
-
-        String responseContent = response.response().getResult().getOutput().getContent();
+        String responseContent = memoryBasicExtractor.extractResponseContent(response);
         if (responseContent.toLowerCase().contains("kush")) {
             applicationEventPublisher.publishEvent(new AssistantContainEvent(responseContent));
         }
